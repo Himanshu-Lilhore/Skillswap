@@ -1,125 +1,153 @@
 import React, { useState, useEffect } from 'react';
 import maleAvatar from '../../assets/avatar/male-default-avatar.png'
 import Axios from 'axios'
-import { useAlert } from '../utils/AlertProvider'
-import { useLoading } from '../utils/LoadingProvider';
 import { useNavigate } from 'react-router-dom'
 
 const UserProfileCard = ({ currProfile, showNext }) => {
 
-    const [isAccepted, setIsAccepted] = useState('')
-    const { alert, setAlert } = useAlert()
-    const [id, setid] = useState(Date.now());
-    const { setIsLoading } = useLoading()
+    const [exitDir, setExitDir] = useState(null) // 'left' (reject) | 'right' (accept)
     const navigate = useNavigate()
 
-    function handleAccept() {
-        console.log("Handling acceptance.")
-        setIsAccepted(true)
-        setid(Date.now());
+    // Fire-and-forget: record the swipe on the backend without blocking the UI.
+    function sendSwipe(isAccepted) {
+        if (currProfile.username === 'DEFAULT_USERNAME') return
+        Axios.post(`${import.meta.env.VITE_BACKEND_URL}swipe`, {
+            username: currProfile.username,
+            isAccepted,
+        }).catch(err => console.error('Sending swipe result failed:', err.message))
     }
 
-    function handleReject() {
-        console.log("Handling rejection.")
-        setIsAccepted(false)
-        setid(Date.now());
+    function decide(isAccepted, dir) {
+        if (exitDir) return
+        setExitDir(dir)
+        // After the fling animation, advance to the next profile immediately and
+        // send the result in the background. Advancing in the same tick as the
+        // reset means the incoming card never briefly shows the old profile.
+        setTimeout(() => {
+            sendSwipe(isAccepted)
+            setExitDir(null)
+            showNext()
+        }, 350)
     }
+
+    const handleAccept = () => decide(true, 'right')  // accept flings right
+    const handleReject = () => decide(false, 'left')  // reject flings left
 
     function handleClick() {
         navigate(`/${currProfile.username}`)
     }
 
+    // Safety: clear the exit state whenever a new profile takes the front slot.
     useEffect(() => {
-        const sendResults = async () => {
-            console.log(`isAccepted : ${isAccepted}`) //////
-            console.log(`username : ${currProfile.username}`) //////
-            if (isAccepted !== '' && currProfile.username !== 'DEFAULT_USERNAME') {
-                setIsLoading(true)
-                try {
-                    const response = await Axios.post(`${import.meta.env.VITE_BACKEND_URL}swipe`, {
-                        username: currProfile.username,
-                        isAccepted: isAccepted
-                    })
-                    if (response.status === 200) {
-                        console.log("Swipe results SUCCESSfully sent to backend.")
-                        console.log(response.data.message)
-                        setAlert({
-                            message: response.data.message,
-                            type: "success"
-                        })
-                        showNext()
-                    }
-                } catch (err) {
-                    console.error('Sending swipe results to backend FAILED. :', err.message)
-                }
-                setIsLoading(false)
-            }
-            else {
-                console.log("isAccepted is blank or Default_user is set.")
-            }
-        }
+        setExitDir(null)
+    }, [currProfile])
 
-        sendResults()
 
-    }, [id])
+    const MAX_PILLS = 6
+    const skills = currProfile.skills || []
+    const interests = currProfile.interests || []
 
+    const exitClass =
+        exitDir === 'left' ? '-translate-x-[135%] -rotate-[16deg]'
+        : exitDir === 'right' ? 'translate-x-[135%] rotate-[16deg]'
+        : ''
 
     return (
-        <div className="w-full max-w-md border-2 border-blue-600 dark:border-blue-500 rounded-lg shadow bg-slate-200 dark:bg-gray-900 my-10">
-            <div className="flex flex-col items-center p-10">
-                <div className="flex flex-col items-center p-5">
+        // Outer wrapper owns the swipe EXIT transform/transition.
+        // (Kept separate from the entrance animation so a filling CSS keyframe
+        //  animation doesn't override the exit transform.)
+        <div
+            key={currProfile.username}
+            className={`relative z-10 w-full max-w-md will-change-transform transition-all duration-[350ms] ease-out ${exitClass}`}
+        >
+            {/* Inner card — fixed height so cards never jump; the entrance animation
+                makes it advance forward from the first queued slot. */}
+            <div className="card relative overflow-hidden animate-card-advance flex flex-col h-[600px]">
+
+            {/* Big, desaturated decision mark drawn over the card while it swipes away —
+                tick for accept (right), cross for reject (left). */}
+            <div className={`pointer-events-none absolute inset-0 z-20 flex items-center justify-center transition-all duration-200 ${exitDir ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+                {exitDir === 'right' &&
+                    <div className="flex items-center justify-center w-44 h-44 rounded-full bg-[#5a9184] ring-4 ring-white/25 shadow-xl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-24 h-24 text-white/95">
+                            <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                    </div>
+                }
+                {exitDir === 'left' &&
+                    <div className="flex items-center justify-center w-44 h-44 rounded-full bg-[#b07d7d] ring-4 ring-white/25 shadow-xl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-24 h-24 text-white/95">
+                            <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                    </div>
+                }
+            </div>
+
+            {/* Gradient banner */}
+            <div className="h-24 shrink-0 bg-gradient-to-r from-brand-500 via-brand-400 to-accent-500 bg-200 animate-gradient-x"></div>
+
+            <div className="flex flex-col items-center px-8 pb-8 -mt-12 flex-1 min-h-0">
+                <button onClick={handleClick} className="group shrink-0">
                     <img
-                        className="w-24 h-24 mb-3 rounded-full shadow-lg"
+                        className="w-24 h-24 mb-3 rounded-full ring-4 ring-white dark:ring-slate-900 shadow-lg object-cover transition-transform duration-200 group-hover:scale-105"
                         src={maleAvatar}
                         alt="Default avatar"
                     />
+                </button>
 
-                    <button onClick={handleClick} className="mb-1 text-xl font-medium text-blue-600 dark:text-blue-500">{`@ ${currProfile.username.toLowerCase()}`}</button>
+                <button onClick={handleClick} className="shrink-0 text-lg font-grotesk font-semibold text-brand-600 dark:text-brand-400 hover:underline underline-offset-4">{`@${currProfile.username.toLowerCase()}`}</button>
 
-                    <span className="text-sm text-gray-500 dark:text-gray-300">{`${currProfile.fname} ${currProfile.lname}`}</span>
-                </div>
+                <span className="shrink-0 text-sm text-slate-500 dark:text-slate-400">{`${currProfile.fname} ${currProfile.lname}`}</span>
 
-                <div className='flex flex-col justify-left mt-1'>
-                    <div className='flex flex-col justify-left'>
-                        <span className="text-sm text-gray-500 mb-3">About</span>
-                        <span className="text-sm text-black dark:text-gray-200">{`${currProfile.bio}`}</span>
+                <div className='w-full flex flex-col mt-6 gap-5 flex-1 min-h-0 overflow-hidden'>
+                    <div className='flex flex-col'>
+                        <span className="eyebrow mb-2">About</span>
+                        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200 line-clamp-4">{`${currProfile.bio}`}</p>
                     </div>
 
-                    <div className='flex flex-col justify-left my-5'>
-                        <span className="text-sm text-gray-500 mb-3">Skills</span>
-                        <div className="flex flex-wrap justify-left">
-                            {currProfile.skills.map((element, key) => {
-                                return <label key={key} className='rounded-full text-black bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium text-sm px-4 py-2 text-center me-2 mb-2'>{element}</label>
+                    <div className='flex flex-col'>
+                        <span className="eyebrow mb-3">Can teach</span>
+                        <div className="flex flex-wrap gap-2">
+                            {skills.slice(0, MAX_PILLS).map((element, key) => {
+                                return <span key={key} className='pill-skill'>{element}</span>
                             })}
+                            {skills.length > MAX_PILLS &&
+                                <span className='pill-skill opacity-70'>+{skills.length - MAX_PILLS}</span>
+                            }
                         </div>
                     </div>
 
-                    <div className='flex flex-col justify-between'>
-                        <span className="text-sm text-gray-500 mb-3">Interests</span>
-                        <div className="flex flex-wrap justify-left">
-                            {currProfile.interests.map((element, key) => {
-                                return <label key={key} className='rounded-full text-black bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium text-sm px-4 py-2 text-center me-2 mb-2'>{element}</label>
+                    <div className='flex flex-col'>
+                        <span className="eyebrow mb-3">Wants to learn</span>
+                        <div className="flex flex-wrap gap-2">
+                            {interests.slice(0, MAX_PILLS).map((element, key) => {
+                                return <span key={key} className='pill-interest'>{element}</span>
                             })}
+                            {interests.length > MAX_PILLS &&
+                                <span className='pill-interest opacity-70'>+{interests.length - MAX_PILLS}</span>
+                            }
                         </div>
                     </div>
                 </div>
 
-                <div className="flex mt-4 md:mt-6">
+                <div className="flex w-full gap-3 mt-4 shrink-0">
                     <button
                         onClick={handleReject}
-                        className="py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        disabled={!!exitDir}
+                        className="btn-secondary flex-1"
                     >
-                        Not interested
+                        ✕ Not interested
                     </button>
 
                     <button
                         onClick={handleAccept}
-                        className="inline-flex items-center px-4 py-2 ms-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        disabled={!!exitDir}
+                        className="btn-primary flex-1"
                     >
-                        Swap Skills
+                        ⇄ Swap Skills
                     </button>
-
                 </div>
+            </div>
             </div>
         </div>
     );

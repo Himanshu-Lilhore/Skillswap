@@ -1,12 +1,13 @@
 export default function NotificationItem({ item, isNew }) {
     return (
         <li>
-            <a className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                <span className="flex-1 ms-3 whitespace-nowrap">{item}</span>
+            <div className="flex items-center gap-3 p-3 text-sm font-medium text-slate-700 rounded-xl bg-slate-100/70 hover:bg-brand-50 group transition-colors dark:bg-slate-800/60 dark:hover:bg-brand-500/10 dark:text-slate-200">
+                <span className="flex-shrink-0 w-2 h-2 rounded-full bg-brand-500"></span>
+                <span className="flex-1 whitespace-normal break-words">{item}</span>
                 {isNew &&
-                    <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">New</span>
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold text-brand-700 bg-brand-100 rounded-full dark:bg-brand-500/20 dark:text-brand-300">New</span>
                 }
-            </a>
+            </div>
         </li>
     )
 }

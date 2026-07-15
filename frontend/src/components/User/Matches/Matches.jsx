@@ -39,23 +39,28 @@ export default function Matches() {
   }, [])
 
   return (
-    <div className='flex item-center justify-center w-full min-h-96'>
-      <div className='max-w-xl flex flex-col my-5'>
-        <PageHeading>Matches</PageHeading>
-        <div className="w-full min-w-64 border-2 border-blue-600 dark:border-blue-500 rounded-lg shadow mb-5 p-5 overflow-hidden bg-slate-200 dark:bg-gray-900">
-          <ul className="min-w-96 divide-y divide-gray-200 dark:divide-gray-700">
+    <div className='w-full max-w-4xl mx-auto px-4 md:px-6 py-6 min-h-96'>
+        <div className="flex items-baseline justify-between flex-wrap gap-2">
+          <PageHeading>Matches</PageHeading>
+          {matches.length > 0 &&
+            <span className="text-sm font-grotesk text-slate-500 dark:text-slate-400">{matches.length} connection{matches.length === 1 ? '' : 's'}</span>
+          }
+        </div>
+        <div className="card w-full mb-5 p-3 md:p-4 overflow-hidden animate-scale-in">
+          <ul className="flex flex-col gap-1">
             {matches.length > 0 ? (
               matches.map((user, index) => (
                 <UserListItem key={index} user={user} />
               ))
             ) : (
-              <div className=' text-gray-900 dark:text-white'>
-                <li className="text-center py-4">No matches yet  : (</li>
-              </div>
+              <li className="flex flex-col items-center text-center py-16 text-slate-500 dark:text-slate-400">
+                <span className="text-4xl mb-3">🤝</span>
+                <span className="font-grotesk font-medium text-slate-700 dark:text-slate-200">No matches yet</span>
+                <span className="text-sm mt-1">Head to Swipe and start swapping skills.</span>
+              </li>
             )}
           </ul>
         </div>
-      </div>
     </div>
   )
 }

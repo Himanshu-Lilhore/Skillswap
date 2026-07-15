@@ -2,14 +2,10 @@
 
 export default function MainHeading() {
     return (
-        <div className="text-7xl font-extrabold leading-none tracking-tight text-gray-900 md:text-8xl lg:text-9xl dark:text-white">
-            <div>
-                Skill
-            </div>
-            <div className='flex'>
-                <span className="text-blue-600 dark:text-blue-500">Swap</span>
-                <div>.</div>
-            </div>
-        </div>
+        <h1 className="page-heading text-center text-5xl sm:text-7xl md:text-8xl lg:text-9xl">
+            <span className="text-slate-900 dark:text-white">Skill</span>
+            <span className="text-gradient bg-200 animate-gradient-x">Swap</span>
+            <span className="text-brand-500">.</span>
+        </h1>
     )
 }

@@ -17,7 +17,7 @@ export default function ProfileUpdate() {
     const { alert, setAlert } = useAlert()
     const { setIsLoading } = useLoading()
     const navigate = useNavigate()
-    const fieldsNotToDisplay = ['notifications', 'matches']
+    const fieldsNotToDisplay = ['notifications', 'matches', '_id', '__v', 'password', 'matchRequests', 'rejected']
 
     useEffect(() => {
         const handleFetch = async () => {
@@ -39,17 +39,19 @@ export default function ProfileUpdate() {
                     console.log('Fetch not working')
                 }
             } catch (error) {
-                if (error.response.status === 400) {
-                    console.log('Token is invalid or expired.')
-                } else {
-                    console.error('Fetching profile failed:', error.response.data)
+                // Use optional chaining — a network/CORS error has no `.response`,
+                // and reading `.response.status` directly would throw and leave the
+                // loading overlay stuck (blank page).
+                const status = error?.response?.status
+                console.error('Fetching profile failed:', error?.response?.data || error.message)
+                if (status === 400 || status === 401 || status === 403) {
+                    console.log('Token invalid/expired — redirecting to login.')
+                    setUserData({ ...defaultUser })
+                    navigate('/user/login')
                 }
-                setUserData({})
-                console.log('Redirecting to login page.')
-                setUserData({ ...defaultUser })
-                navigate('/user/login')
+            } finally {
+                setIsLoading(false)
             }
-            setIsLoading(false)
         }
 
         handleFetch()
@@ -88,41 +90,40 @@ export default function ProfileUpdate() {
     }
 
     return (
-        <div className="flex items-center justify-center w-full">
+        <div className="w-full max-w-4xl mx-auto px-4 md:px-6 py-6">
 
-            <div className='flex flex-col my-5'>
+            <PageHeading>Edit Profile</PageHeading>
 
-                <PageHeading>Edit Profile</PageHeading>
+            <div className="card mb-5 p-6 md:p-10 animate-scale-in">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    {Object.keys(userData).map((myKey) => {
+                        // Key includes the username so rows remount once the real
+                        // profile replaces the default — otherwise SkillRowEdit keeps
+                        // its initial (empty) skill list.
+                        const rowKey = `${userData.username}-${myKey}`
+                        if (myKey === 'skills' || myKey === 'interests') {
+                            return <SkillRowEdit
+                                key={rowKey}
+                                dataType={myKey}
+                                dataVal={userData[myKey]}
+                                preSaveUserData={preSaveUserData}
+                                setPreSaveUserData={setPreSaveUserData}
+                            />
+                        } else if (!fieldsNotToDisplay.includes(myKey)) {
+                            return <DataRow
+                                key={rowKey}
+                                dataType={myKey}
+                                dataVal={userData[myKey]}
+                                preSaveUserData={preSaveUserData}
+                                setPreSaveUserData={setPreSaveUserData}
+                            />
+                        }
+                    })}
+                </div>
 
-                <div className="w-full max-w-2xl border-2 border-blue-600 dark:border-blue-500 rounded-lg shadow bg-slate-200 dark:bg-gray-900 mb-5">
-                    <div className="flex flex-col items-center p-10">
-
-                        {console.log('userData keys:', Object.keys(userData))}
-                        <div className="flex flex-col items-center p-5">
-                            {Object.keys(userData).map((myKey, itr) => {
-                                if (myKey === 'skills' || myKey === 'interests') {
-                                    return <SkillRowEdit
-                                        key={itr}
-                                        dataType={myKey}
-                                        dataVal={userData[myKey]}
-                                        preSaveUserData={preSaveUserData}
-                                        setPreSaveUserData={setPreSaveUserData}
-                                    />
-                                } else if (!fieldsNotToDisplay.includes(myKey)) {
-                                    return <DataRow
-                                        key={itr}
-                                        dataType={myKey}
-                                        dataVal={userData[myKey]}
-                                        preSaveUserData={preSaveUserData}
-                                        setPreSaveUserData={setPreSaveUserData}
-                                    />
-                                }
-                            })}
-                        </div>
-
-                        <button onClick={handleClick} className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-lg px-7 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>💾 SAVE</button>
-
-                    </div>
+                <div className="mt-8 flex justify-end gap-3">
+                    <button onClick={() => navigate('/user/profile')} className='btn-secondary btn-lg'>Cancel</button>
+                    <button onClick={handleClick} className='btn-accent btn-lg'>💾 Save changes</button>
                 </div>
             </div>
         </div>

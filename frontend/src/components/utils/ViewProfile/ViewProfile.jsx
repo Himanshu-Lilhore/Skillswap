@@ -17,6 +17,8 @@ export default function ViewProfile({ children }) {
     const { alert, setAlert } = useAlert()
     const { isLoading, setIsLoading } = useLoading()
     const { username } = useParams()
+    // Header-shown + internal fields are hidden from the details grid.
+    const fieldsNotToDisplay = ['notifications', 'matches', 'username', 'fname', 'lname', '_id', '__v', 'password', 'matchRequests', 'rejected']
 
     useEffect(() => {
         console.log("username :" , username)
@@ -69,29 +71,40 @@ export default function ViewProfile({ children }) {
 
 
     return (
-        <div className="flex items-center justify-center w-full">
+        <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-6">
 
-            <div className='flex flex-col my-5'>
+            <PageHeading>{`@${userData.username.toLowerCase()}`}</PageHeading>
 
-                <PageHeading>{`@ ${userData.username.toLowerCase()}`}</PageHeading>
+            <div className="card overflow-hidden animate-scale-in">
+                {/* Wide header */}
+                <div className="relative h-32 md:h-40 bg-gradient-to-r from-brand-500 via-brand-400 to-accent-500 bg-200 animate-gradient-x"></div>
 
-                <div className="w-full max-w-lg border-2 border-blue-600 dark:border-blue-500 rounded-lg shadow bg-slate-200 dark:bg-gray-900 mb-5">
-                    <div className="flex flex-col items-center p-10">
-
-                        <div className="flex flex-col items-center p-5">
-                            {Object.keys(userData).map((myKey, itr) => {
-                                if (myKey === 'skills' || myKey === 'interests') {
-                                    return <SkillRow key={itr} dataType={myKey} dataVal={userData[myKey]} />
-                                } else {
-                                    return <DataRow key={itr} dataType={myKey} dataVal={userData[myKey]} />
-                                }
-                            })}
+                <div className="relative z-10 px-6 md:px-10 pb-8">
+                    <div className="flex items-end -mt-12 sm:-mt-14">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl ring-4 ring-white dark:ring-slate-900 bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white text-3xl sm:text-4xl font-grotesk font-bold shadow-lg shrink-0">
+                            {userData.username?.charAt(0)?.toUpperCase() || '?'}
                         </div>
+                    </div>
 
+                    <div className="mt-5">
+                        <h1 className="text-2xl md:text-3xl font-grotesk font-bold leading-tight text-slate-900 dark:text-white">{`${userData.fname} ${userData.lname}`}</h1>
+                        <p className="mt-1.5 text-brand-600 dark:text-brand-400 font-medium">{`@${userData.username.toLowerCase()}`}</p>
+                    </div>
+
+                    {/* Details grid */}
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-12">
+                        {Object.keys(userData).map((myKey, itr) => {
+                            if (fieldsNotToDisplay.includes(myKey)) return null
+                            if (myKey === 'skills' || myKey === 'interests') {
+                                return <SkillRow key={itr} dataType={myKey} dataVal={userData[myKey]} />
+                            } else {
+                                return <DataRow key={itr} dataType={myKey} dataVal={userData[myKey]} />
+                            }
+                        })}
                     </div>
                 </div>
-
             </div>
+
         </div>
     )
 }

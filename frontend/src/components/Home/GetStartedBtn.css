@@ -1,62 +1,59 @@
-@import url('https://fonts.googleapis.com/css?family=Space%20Grotesk:700|Space%20Grotesk:400');
-
-:root {
-/*  change this for scaling  */
-  --m: 4rem;
-  
-  --red: #FF6565;
-  --pink: #FF64F9;
-  --purple: #6B5FFF;
-  --blue: #4D8AFF;
-  --green: #5BFF89;
-  --yellow: #FFEE55;
-  --orange: #FF6D1B;
-  
-}
+/* On-theme animated gradient CTA — blue -> teal to match the SkillSwap palette. */
 
 .getStarted {
-  border: calc(0.08 * var(--m)) solid transparent;
   position: relative;
-  color: #F3F3F3;
-  font-family: 'Space Grotesk';
-  font-size: var(--m);
-  border-radius: calc(0.7 * var(--m));
-  padding: calc(0.5 * var(--m)) calc(1 * var(--m));
+  border: 2px solid transparent;
+  color: #ffffff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+  border-radius: 1rem;
+  padding: 0.9rem 2.6rem;
   display: flex;
+  align-items: center;
   justify-content: center;
   cursor: pointer;
-  
-  background:linear-gradient(#121213, #121213), linear-gradient(#121213 50%, rgba(18, 18, 19, 0.6) 80%, rgba(18, 18, 19, 0)),  linear-gradient(90deg, var(--orange), var(--yellow), var(--green), var(--blue), var(--purple), var(--pink), var(--red));
-  background-origin: border-box;
-  background-clip: padding-box, border-box, border-box;
-  background-size: 200%;
-  animation: animate 2s infinite linear;
+  isolation: isolate;
+
+  /* Solid core + animated gradient ring, drawn on the border box. */
+  background:
+    linear-gradient(#0b1220, #0b1220) padding-box,
+    linear-gradient(90deg, #2563eb, #3b82f6, #14b8a6, #2dd4bf, #2563eb) border-box;
+  background-size: 100%, 300%;
+  background-position: 0 0, 0 50%;
+  box-shadow: 0 10px 30px -8px rgba(37, 99, 235, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: gradientMove 6s linear infinite;
 }
 
-/* .getStarted::before {
-  content: '';
-  background: linear-gradient(90deg, var(--orange), var(--yellow), var(--green), var(--blue), var(--purple), var(--pink), var(--red));
-  height: 30%;
-  width: 60%;
-  position: absolute;
-  bottom: -20%;
-  z-index: -5;
-  background-size: 200%;
-  animation: animate 2s infinite linear;
-  filter: blur(calc(0.8 * var(--m)));
-} */
-
-.getStarted:hover, button:hover::before {
-  animation: animate 0.5s infinite linear;
+/* Light theme gets a lighter core so it feels airy while text stays readable. */
+:root:not(.dark) .getStarted {
+  background:
+    linear-gradient(#1e293b, #1e293b) padding-box,
+    linear-gradient(90deg, #2563eb, #3b82f6, #14b8a6, #2dd4bf, #2563eb) border-box;
+  background-size: 100%, 300%;
+  background-position: 0 0, 0 50%;
 }
 
-@keyframes animate {
-  0% {background-position: 0}
-  100% {background-position: 200%}
+.getStarted:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -10px rgba(20, 184, 166, 0.55);
+  animation-duration: 2.5s;
 }
 
-@media screen and (max-width: 1000px) {
-  :root {
-    --m: 2rem;
+.getStarted:active {
+  transform: translateY(0);
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0 0, 0% 50%; }
+  100% { background-position: 0 0, 300% 50%; }
+}
+
+@media screen and (max-width: 640px) {
+  .getStarted {
+    font-size: 1.1rem;
+    padding: 0.8rem 2rem;
   }
 }

@@ -7,26 +7,25 @@ export default function Loading() {
     bouncy.register()
 
     const blurStyle = {
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(15, 23, 42, 0.35)'
     }
 
     return (
         <>
             {isLoading &&
-                <div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in">
                     {/* blur screen */}
-                    <div aria-hidden="true" className="fixed z-40 w-screen h-screen top-0 left-0" style={blurStyle}></div>
+                    <div aria-hidden="true" className="absolute inset-0" style={blurStyle}></div>
 
-                    <div className='w-screen h-screen flex justify-center z-50 absolute'>
-                        <div className='mt-60'>
-                            <l-bouncy
-                                size="60"
-                                speed="1.75"
-                                color="#3b82f6"
-                            ></l-bouncy>
-                        </div>
+                    <div className="relative flex flex-col items-center gap-4 px-8 py-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-card ring-1 ring-inset ring-brand-500/20">
+                        <l-bouncy
+                            size="55"
+                            speed="1.75"
+                            color="#2563eb"
+                        ></l-bouncy>
+                        <span className="text-sm font-grotesk font-medium text-slate-500 dark:text-slate-300">Loading…</span>
                     </div>
                 </div>
             }

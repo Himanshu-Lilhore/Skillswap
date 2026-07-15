@@ -27,10 +27,13 @@ export default function RegtdUsers() {
     }, [])
 
     return (
-        <div className="flex justify-center items-center font-sans font-medium text-black dark:text-white text-md sm:text-xl">
-            <span>Registered&nbsp;</span>
-            <div className='text-blue-600 dark:text-blue-500 font-bold border-solid border-blue-600 dark:border-blue-500 rounded-lg border-2 px-1'>{users}</div>
-            <span>&nbsp;users till now...</span>
+        <div className="flex justify-center items-center gap-2 font-grotesk font-medium text-slate-500 dark:text-slate-400 text-sm sm:text-base">
+            <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
+            </span>
+            <span className='font-bold text-brand-600 dark:text-brand-400 tabular-nums'>{users}</span>
+            <span>skill-swappers and counting</span>
         </div>
     )
 }

@@ -1,10 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ *
+ *  SkillSwap design system
+ *  Semantic component classes built on the original blue + teal theme.
+ *  Everything below is light/dark aware.
+ * ------------------------------------------------------------------ */
 
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply font-sans text-slate-800 dark:text-slate-100 antialiased;
+  }
+  ::selection {
+    @apply bg-brand-500/30;
+  }
+  /* Themed scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-500/40 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-500/70;
+  }
+}
 
+@layer components {
 
+  /* ---- Surfaces --------------------------------------------------- */
+  .card {
+    @apply rounded-2xl border border-brand-500/30 dark:border-brand-500/25
+           bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl
+           shadow-card;
+  }
+  .card-interactive {
+    @apply card transition-all duration-300 ease-out
+           hover:-translate-y-1 hover:border-brand-500/60
+           hover:shadow-glow;
+  }
+  .panel {
+    @apply rounded-2xl border border-slate-200/70 dark:border-slate-700/60
+           bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl shadow-card;
+  }
+
+  /* ---- Buttons ---------------------------------------------------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 select-none
+           font-grotesk font-medium rounded-xl px-5 py-2.5 text-sm
+           transition-all duration-200 ease-out
+           focus:outline-none focus-visible:ring-4
+           disabled:opacity-60 disabled:cursor-not-allowed
+           active:scale-[0.97];
+  }
+  .btn-primary {
+    @apply btn text-white
+           bg-gradient-to-br from-brand-500 to-brand-700
+           hover:from-brand-600 hover:to-brand-800
+           shadow-md shadow-brand-600/25 hover:shadow-glow
+           focus-visible:ring-brand-500/40;
+  }
+  .btn-accent {
+    @apply btn text-white
+           bg-gradient-to-br from-accent-400 to-accent-600
+           hover:from-accent-500 hover:to-accent-700
+           shadow-md shadow-accent-600/25 hover:shadow-glow-accent
+           focus-visible:ring-accent-500/40;
+  }
+  .btn-secondary {
+    @apply btn text-slate-700 dark:text-slate-100
+           bg-white/70 dark:bg-slate-800/70
+           border border-slate-300 dark:border-slate-600
+           hover:bg-white dark:hover:bg-slate-800
+           hover:border-brand-400 dark:hover:border-brand-500
+           focus-visible:ring-slate-300/60 dark:focus-visible:ring-slate-600/60;
+  }
+  .btn-ghost {
+    @apply btn text-slate-500 dark:text-slate-300 font-normal
+           hover:bg-slate-200/70 dark:hover:bg-slate-700/60
+           focus-visible:ring-slate-300/40;
+  }
+  .btn-lg {
+    @apply text-base px-7 py-3 rounded-2xl;
+  }
+
+  /* ---- Form controls --------------------------------------------- */
+  .field-label {
+    @apply block mb-2 text-sm font-medium text-slate-600 dark:text-slate-300;
+  }
+  .field-input {
+    @apply block w-full rounded-xl px-4 py-2.5 text-sm
+           bg-white/70 dark:bg-slate-900/60
+           border border-slate-300 dark:border-slate-600
+           text-slate-900 dark:text-white placeholder-slate-400
+           transition-all duration-200
+           focus:outline-none focus:border-brand-500
+           focus:ring-2 focus:ring-brand-500/40;
+  }
+  .field-input-underline {
+    @apply block w-full py-2.5 px-0 text-sm bg-transparent
+           text-slate-900 dark:text-white
+           border-0 border-b-2 border-slate-300 dark:border-slate-500
+           appearance-none focus:outline-none focus:ring-0
+           focus:border-brand-500 transition-colors duration-200;
+  }
+
+  /* ---- Pills (skills vs interests get distinct hues) ------------- */
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full px-3.5 py-1.5
+           text-sm font-medium ring-1 ring-inset transition-all duration-200;
+  }
+  .pill-skill {
+    @apply pill text-accent-800 bg-accent-100/80 ring-accent-500/40
+           dark:text-accent-100 dark:bg-accent-500/15 dark:ring-accent-400/30
+           hover:bg-accent-200/90 dark:hover:bg-accent-500/25;
+  }
+  .pill-interest {
+    @apply pill text-brand-800 bg-brand-100/80 ring-brand-500/40
+           dark:text-brand-100 dark:bg-brand-500/15 dark:ring-brand-400/30
+           hover:bg-brand-200/90 dark:hover:bg-brand-500/25;
+  }
+
+  /* ---- Typography ------------------------------------------------- */
+  .page-heading {
+    @apply font-display font-extrabold tracking-tight leading-none
+           text-slate-900 dark:text-white;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500
+           bg-clip-text text-transparent;
+  }
+  .eyebrow {
+    @apply text-xs font-grotesk font-semibold uppercase tracking-[0.2em]
+           text-brand-600 dark:text-brand-400;
+  }
+
+  /* ---- Divider ---------------------------------------------------- */
+  .divider {
+    @apply border-slate-200/80 dark:border-slate-700/70;
+  }
+}
+
+/* Swipe deck: the incoming card starts where the first queued card sat
+   (offset right + scaled down) and advances forward into the center slot. */
+@keyframes card-advance {
+  from { transform: translateX(2rem) scale(0.94); opacity: 0.55; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+.animate-card-advance {
+  animation: card-advance 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Legacy helper kept for backwards compatibility */
 .rubik-google-font {
   font-family: "Rubik", sans-serif;
   font-optical-sizing: auto;

@@ -15,9 +15,12 @@ function GetStartedBtn() {
     }
 
     return (
-        <div className="flex justify-center items-center scale-50">
+        <div className="flex justify-center items-center">
             <Link to="/user/register">
-                <button className="getStarted" onClick={handleOnClick}>Get started!</button>
+                <button className="getStarted group" onClick={handleOnClick}>
+                    Get started
+                    <span className="ml-2 inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+                </button>
             </Link>
         </div>
     );

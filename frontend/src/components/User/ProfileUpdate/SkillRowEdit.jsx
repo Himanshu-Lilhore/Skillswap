@@ -4,14 +4,13 @@ import SearchableDropdown from './SearchableDropdown'
 import CloseIcon from '../../../assets/CloseIcon.jsx'
 
 export default function SkillRowEdit({ dataType, dataVal, preSaveUserData, setPreSaveUserData }) {
-    const [includedSkills, setIncludedSkills] = useState([...dataVal])
+    const [includedSkills, setIncludedSkills] = useState([...(dataVal || [])])
     const [excludedSkills, setExcludedSkills] = useState()
-    const keyValPairCss = "w-full flex justify-between my-5"
 
     useEffect(() => {
         const fetchSkills = async () => {
             const response = await Axios.get(`${import.meta.env.VITE_BACKEND_URL}skills`)
-            const dataValIds = dataVal.map(skill => skill._id)
+            const dataValIds = (dataVal || []).map(skill => skill._id)
             let otherSkills = response.data.filter(thisSkill => !dataValIds.includes(thisSkill._id))
             console.log(dataType, otherSkills)
             setExcludedSkills(otherSkills)
@@ -40,29 +39,26 @@ export default function SkillRowEdit({ dataType, dataVal, preSaveUserData, setPr
     }
 
 
+    const pillClass = dataType === 'interests' ? 'pill-interest' : 'pill-skill'
+
     return (
-        <div className={keyValPairCss}>
-            <label className='text-lg text-black dark:text-gray-200 font-bold mr-6'>{dataType}</label>
+        <div className="w-full md:col-span-2 flex flex-col gap-3 pt-2 border-t divider">
+            <label className='field-label capitalize'>{dataType}</label>
 
-            <div className="flex flex-col">
-                <div className="flex flex-wrap justify-end">
-                    {includedSkills.map((element, key) => {
-                        return (
-                            <label key={key} skillid={element._id} className='flex items-center rounded-full text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium text-sm pl-4 pr-2.5 py-2.5 text-center me-2 mb-2'>
-                                {element.name}
-                                <button onClick={() => handleSkillRemove(element)} className="text-black text-sm pl-1 font-black">
-                                    <CloseIcon />
-                                </button>
-                            </label>
-                        );
-                    })}
-                </div>
+            <div className="flex flex-wrap items-center gap-2">
+                {includedSkills.map((element, key) => {
+                    return (
+                        <span key={key} skillid={element._id} className={`${pillClass} pr-2`}>
+                            {element.name}
+                            <button onClick={() => handleSkillRemove(element)} className="ml-1 opacity-60 hover:opacity-100 transition-opacity">
+                                <CloseIcon />
+                            </button>
+                        </span>
+                    );
+                })}
 
-                <div className="flex p-3 justify-end">
-                    <SearchableDropdown options={excludedSkills} onSelect={handleSkillAdd} />
-                </div>
+                <SearchableDropdown options={excludedSkills} onSelect={handleSkillAdd} />
             </div>
-
         </div>
     )
 }

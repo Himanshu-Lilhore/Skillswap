@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './SearchableDropdown.css'
 
-function SearchableDropdown({ options, onSelect }) {
+function SearchableDropdown({ options = [], onSelect }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredOptions, setFilteredOptions] = useState(options);
     const [showOptions, setShowOptions] = useState(false);

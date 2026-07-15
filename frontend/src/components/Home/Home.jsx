@@ -33,19 +33,23 @@ export default function Home() {
 
     return (
         <>
-            <div className='flex flex-col select-none'>
-                <div className='flex justify-center'>
+            <div className='flex flex-col items-center select-none px-6 py-10 md:py-20'>
+
+                <span className='eyebrow mb-6 animate-fade-in-up'>Learn something. Teach something.</span>
+
+                <div className='animate-fade-in-up' style={{ animationDelay: '60ms' }}>
+                    <MainHeading />
+                </div>
+
+                <div className='mt-6 animate-fade-in-up' style={{ animationDelay: '140ms' }}>
                     <Slogan />
                 </div>
-                <div className='w-full justify-center flex items-center flex-col sm:flex-row'>
-                    <div className='m-8'>
-                        <MainHeading />
-                    </div>
-                    <div className='flex flex-col justify-center mt-8'>
-                        <RegtdUsers />
-                        <GetStartedBtn />
-                    </div>
+
+                <div className='flex flex-col items-center gap-6 mt-10 animate-fade-in-up' style={{ animationDelay: '220ms' }}>
+                    <GetStartedBtn />
+                    <RegtdUsers />
                 </div>
+
             </div>
         </>
     )

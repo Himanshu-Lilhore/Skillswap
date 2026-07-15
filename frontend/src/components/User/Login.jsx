@@ -71,23 +71,24 @@ const Login = () => {
     };
 
     return (
-        <div className='flex justify-around items-center text-black dark:text-white px-14'>
-            <div className='w-1/2 p-16' style={{ scale: '1.1' }}>
+        <div className='flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 text-slate-900 dark:text-white px-6 md:px-14 py-10'>
+            <div className='hidden md:block w-1/2 max-w-lg animate-fade-in-up' style={{ scale: '1.1' }}>
                 <LoginImg />
             </div>
 
-            <form className="min-w-96 max-w-sm mx-auto">
+            <form className="card w-full max-w-md p-8 animate-scale-in">
 
+                <span className="eyebrow">Welcome back</span>
                 <PageHeading>Login</PageHeading>
 
                 <div className="mb-5">
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <label htmlFor="email" className="field-label">
                         Your email
                     </label>
                     <input
                         type="email"
                         id="email"
-                        className="bg-slate-200 dark:bg-gray-900 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="field-input"
                         placeholder="name@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -95,32 +96,34 @@ const Login = () => {
                     />
                 </div>
                 <div className="mb-5">
-                    <label htmlFor="password" aria-autocomplete='' className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    <label htmlFor="password" aria-autocomplete='' className="field-label">
                         Your password
                     </label>
                     <input
                         type="password"
                         id="password"
-                        className="bg-slate-200 dark:bg-gray-900 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="field-input"
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="flex items-start mb-5">
-                    <Link to="/user/register" className="underline ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                        Sign up!
-                    </Link>
-                </div>
-
                 <button
                     onClick={handleSubmit}
                     type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="btn-primary w-full mt-2"
                 >
-                    Submit
+                    Log in
                 </button>
+
+                <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                    New here?{' '}
+                    <Link to="/user/register" className="font-medium text-brand-600 dark:text-brand-400 hover:underline underline-offset-4">
+                        Create an account
+                    </Link>
+                </p>
             </form>
         </div>
     );

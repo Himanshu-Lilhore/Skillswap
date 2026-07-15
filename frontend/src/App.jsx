@@ -20,9 +20,11 @@ export default function App() {
       <LoadingProvider>
         <AlertProvider>
           <UserProvider>
-            <div className={`overflow-hidden bg-sky-100 dark:bg-slate-950 relative bg-cover bg-fixed bg-center w-full ${bgImage}`}>
+            <div className={`overflow-hidden bg-sky-50 dark:bg-slate-950 relative bg-cover bg-fixed bg-center w-full ${bgImage}`}>
 
-              <img src={waveyFingerprint} alt="Overlay Image" className="overlay min-h-screen opacity-35 dark:opacity-10" />
+              <img src={waveyFingerprint} alt="Overlay Image" className="overlay min-h-screen opacity-30 dark:opacity-[0.07]" />
+
+              <div className="ambient-glow" aria-hidden="true"></div>
 
               <div className="content z-20 min-h-screen relative flex justify-between flex-col">
 
