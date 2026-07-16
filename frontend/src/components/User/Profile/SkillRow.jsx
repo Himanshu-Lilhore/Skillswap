@@ -3,7 +3,7 @@ export default function SkillRow({dataType, dataVal}) {
 
     return (
         <div className="w-full my-2 flex flex-col py-3 border-b divider md:col-span-2">
-            <label className='eyebrow mb-3 capitalize'>{dataType}</label>
+            <label className='eyebrow mb-3'>{dataType === 'interests' ? 'Want to learn' : 'Can teach'}</label>
             <div className="flex flex-wrap gap-2">
                 {dataVal.map((element, key) => {
                     return <span key={key} className={pillClass}>{element.name}</span>

@@ -43,7 +43,7 @@ export default function SkillRowEdit({ dataType, dataVal, preSaveUserData, setPr
 
     return (
         <div className="w-full md:col-span-2 flex flex-col gap-3 pt-2 border-t divider">
-            <label className='field-label capitalize'>{dataType}</label>
+            <label className='field-label'>{dataType === 'interests' ? 'Want to learn' : 'Can teach'}</label>
 
             <div className="flex flex-wrap items-center gap-2">
                 {includedSkills.map((element, key) => {

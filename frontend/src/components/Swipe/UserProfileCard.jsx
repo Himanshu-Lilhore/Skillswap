@@ -118,7 +118,7 @@ const UserProfileCard = ({ currProfile, showNext }) => {
                     </div>
 
                     <div className='flex flex-col'>
-                        <span className="eyebrow mb-3">Wants to learn</span>
+                        <span className="eyebrow mb-3">Want to learn</span>
                         <div className="flex flex-wrap gap-2">
                             {interests.slice(0, MAX_PILLS).map((element, key) => {
                                 return <span key={key} className='pill-interest'>{element}</span>

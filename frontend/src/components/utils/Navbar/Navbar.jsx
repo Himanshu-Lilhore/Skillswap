@@ -3,7 +3,7 @@ import ThemeToggle from '../ThemeToggle';
 import NavLink from './Navlink';
 import { useUser } from '../UserProvider';
 import { defaultUser } from '../defaultUser';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Notification from './Notification';
 import Axios from 'axios'
 import { useAlert } from '../AlertProvider'
@@ -59,11 +59,9 @@ const Navbar = ({ isDark, setIsDark }) => {
     <nav className="select-none sticky top-0 z-30 border-b border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-3">
 
-        { !(location.pathname === '/home' || location.pathname === '/') &&
-          <h1 className="page-heading text-3xl md:text-4xl">
-            Skill<span className="text-gradient">Swap</span><span className="text-brand-500">.</span>
-          </h1>
-        }
+        <Link to="/home" className="page-heading text-3xl md:text-4xl">
+          Skill<span className="text-gradient">Swap</span><span className="text-brand-500">.</span>
+        </Link>
 
         <button
           onClick={() => setMenuOpen((open) => !open)}
@@ -96,7 +94,7 @@ const Navbar = ({ isDark, setIsDark }) => {
               </li>
             }
 
-            {!isLoggedIn &&
+            {!isLoggedIn && !(location.pathname === '/home' || location.pathname === '/') &&
               <li>
                 <NavLink to="/home">Home</NavLink>
               </li>

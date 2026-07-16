@@ -33,7 +33,7 @@ export default function RegtdUsers() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
             </span>
             <span className='font-bold text-brand-600 dark:text-brand-400 tabular-nums'>{users}</span>
-            <span>skill-swappers and counting</span>
+            <span>members already trading skills</span>
         </div>
     )
 }
